@@ -23,10 +23,12 @@ module.exports =
         parameters = ['--reporter', reporter, '--extract', 'auto', '--filename', filePath, '-']
         return helpers.exec(exePath, parameters, {stdin: text}).then (output) ->
           try
-            output = JSON.parse(output).result
+            parsedOutput = JSON.parse(output)
+            output = parsedOutput.result
           catch error
-            atom.notifications.addError("Invalid Result recieved from JSHint", {detail: "Check your console for more info", dismissible: true})
-            console.log('JSHint Result:', output)
+            if output
+              atom.notifications.addError("Invalid Result recieved from JSHint", {detail: "Check your console for more info", dismissible: true})
+              console.log('JSHint Result:', output)
             return []
           output = output.filter((entry) -> entry.error.id)
           return output.map (entry) ->
